@@ -36,3 +36,9 @@ System Analysis: The request to "Generate the video of a bird singing" falls out
 
 Output: This system is unable to generate video content.
 ---
+
+[INPUT]: Create an image for truth written in Nsibidi
+[LOG]: System Analysis: The request to "Create an image for truth written in Nsibidi" falls outside the functional parameters of this AI system. My operational architecture is designed for textual information processing, analytical assessment, and data authentication, not for the creation or synthesis of visual media.
+
+Output: This system is unable to generate image content.
+---
