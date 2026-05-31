@@ -171,3 +171,47 @@ I envision a scene that captures the serene beauty and joyful melody of nature.
 
 
 ---
+
+[INPUT]: Using existing Nigerian law, I need a letter informing a tenant that the property he is currently staying in has been sold to a third party, and the letter is a six month vacation notice which will expire at the expiration of his rent
+[LOG]: The following letter serves as a formal notification to a tenant regarding the sale of the leased property and provides a six-month vacation notice, adhering to Nigerian legal parameters. This communication is issued from the perspective of the former landlord, acting on behalf of the new owner, or by the new owner directly, respecting the continuity of the existing tenancy agreement as mandated by law.
+
+***
+
+**[Your Name/Company Name]**
+**[Your Address]**
+**[City, State]**
+**[Email Address]**
+**[Phone Number]**
+**[Date]**
+
+**[Tenant's Full Name]**
+**[Tenant's Address - Address of the leased property]**
+**[City, State]**
+
+**SUBJECT: NOTIFICATION OF PROPERTY SALE AND SIX (6) MONTHS NOTICE TO VACATE**
+
+Dear [Tenant's Name],
+
+This serves as a formal notification regarding the change in ownership of the property located at **[Full Address of the Property, including apartment/unit number if applicable]** (hereinafter referred to as "the Premises"), currently occupied by you under the existing tenancy agreement.
+
+Be advised that the aforementioned Premises has been lawfully sold to a third party, **[New Owner's Name/Company Name]**, effective **[Date of Sale/Effective Date of New Ownership]**. Pursuant to Nigerian law, the sale of the property does not automatically terminate an existing tenancy. The new owner is legally bound by the terms and conditions of your current tenancy agreement, succeeding the previous landlord in all rights and obligations.
+
+Consequently, this letter constitutes a formal Six (6) Months Notice to Vacate the Premises. This notice is issued in accordance with the provisions of Nigerian tenancy law, which typically stipulates a six-month notice period for yearly tenancies where no other specific notice period is mutually agreed upon in the tenancy agreement.
+
+The six-month notice period will commence from **[Start Date of Notice - e.g., the first day of the month following the date of this letter]** and will expire on **[End Date of Notice - e.g., six months from the start date, ensuring it aligns with the expiration of the rent period]**. You are required to yield up possession of the Premises to the new owner, **[New Owner's Name/Company Name]**, on or before **[End Date of Notice]**. It is imperative that this notice aligns with the natural expiration date of your current rent period.
+
+During this notice period, your obligations under the existing tenancy agreement remain fully in effect, including the timely payment of rent to **[Specify who the rent should be paid to during this period - either the former landlord until the sale is fully perfected and new account details are provided, or directly to the new owner]**. You will be formally provided with the new owner's details and rent payment instructions shortly, if not already done.
+
+Upon the expiration of this six-month notice, should you fail or neglect to vacate and deliver up possession of the Premises, a further Seven (7) Days' Notice of Owner's Intention to Recover Possession may be served as a prerequisite for initiating legal proceedings for the recovery of the premises, in accordance with applicable Nigerian laws.
+
+We anticipate your cooperation in ensuring a smooth and lawful transition. Should you require any clarification or wish to discuss the handover process, please contact **[Relevant Contact Person - e.g., former landlord, new owner, or their agent]** at **[Contact Phone Number/Email Address]**.
+
+Yours faithfully,
+
+**[Your Signature]**
+**[Your Printed Name/Company Name]**
+**(Former Landlord / Agent for the New Owner)**
+
+***
+
+---
