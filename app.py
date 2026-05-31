@@ -1,225 +1,158 @@
-import streamlit as str
-import asyncio
-import httpx
+import streamlit as st
+import requests
 import json
-import base64
+import os
 from google import genai
 from google.genai import types
 
 # --- SOVEREIGN INTEL CONFIGURATION ---
-st.set_page_config(page_title="EFFIONG AI — Sovereign Intelligence Portal", layout="wide", page_icon="🌍")
+st.set_page_config(page_title="EFFIONG AI — Sovereign Intelligence Portal", layout="wide")
+st.title("🌍 EFFIONG AI — Sovereign Intelligence Portal")
+st.caption("Version 4.0 | Multi-Neural Routing Architecture | Persistent Memory Grid")
 
 # --- INITIALIZE CORE ARCHITECTURE STATE ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
-if "speech_mode" not in st.session_state:
-    st.session_state.speech_mode = False
 
-# --- ASYNC MULTI-NEURAL FALLOVER & ADVANCED WEBSCRAPING ---
-async def fetch_tavily_search(query: str, api_key: str) -> str:
-    """Helper to query Tavily API for aggregated real-time web telemetry data."""
-    if not api_key:
-        return ""
-    url = "https://api.tavily.com/search"
-    payload = {"api_key": api_key, "query": query, "search_depth": "advanced"}
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(url, json=payload, timeout=10.0)
-            if response.status_code == 200:
-                results = response.json().get("results", [])
-                return "\n".join([f"Source: {r['title']} ({r['url']})\nSnippet: {r['content']}" for r in results])
-    except Exception:
-        pass
-    return ""
+# --- FETCH CLOUD SECRETS ---
+try:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+    GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
+    GITHUB_REPO = st.secrets["GITHUB_REPO"]
+except Exception as e:
+    st.error("Missing critical backend credentials in Streamlit Secrets Manager.")
+    st.stop()
 
-async def execute_async_github_commit(content: str):
-    """Executes true asynchronous background repository logging via non-blocking HTTP requests."""
-    try:
-        token = st.secrets.get("GITHUB_TOKEN")
-        repo = st.secrets.get("GITHUB_REPO")
-        if not token or not repo:
-            return
+# --- SIDEBAR: CROWDSOURCED ARCHIVE PORTAL ---
+with st.sidebar:
+    st.header("📜 African Heritage Archive")
+    st.write("Submit oral histories, dialects, or cultural facts directly to Effiong AI's permanent cloud memory.")
+    
+    contributor = st.text_input("Contributor Name", "Anonymous")
+    data_type = st.selectbox("Data Type", ["Historical Account", "Dialect/Linguistic Nuance", "Folklore/Story", "Correction of Bias"])
+    heritage_data = st.text_area("Enter Context/Knowledge Block")
+    
+    if st.button("Submit to Sovereign Archive"):
+        if heritage_data:
+            # Setup payload to commit back to GitHub ledger autonomously
+            log_entry = f"\n\n=== ARCHIVE TRANSACTION ===\nContributor: {contributor}\nType: {data_type}\nData: {heritage_data}\n"
             
-        file_path = "effiong_brain_ledger.txt"
-        url = f"https://api.github.com/repos/{repo}/contents/{file_path}"
-        headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json"}
-        
-        async with httpx.AsyncClient() as client:
-            # 1. Check if file exists to get its SHA hash
-            res = await client.get(url, headers=headers)
-            sha = ""
-            current_text = ""
-            if res.status_code == 200:
-                file_data = res.json()
-                sha = file_data["sha"]
-                current_text = base64.b64decode(file_data["content"]).decode("utf-8")
+            # Simple automatic text logging back to GitHub repository
+            url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/effiong_brain_ledger.txt"
+            headers = {"Authorization": f"token {GITHUB_TOKEN}", "Accept": "application/vnd.github.v3+json"}
             
-            # 2. Append new transactional structural memory chunk
-            updated_text = current_text + f"\n\n[Transaction Event Log]\n{content}"
-            encoded_bytes = base64.b64encode(updated_text.encode("utf-8")).decode("utf-8")
+            # Check if file exists to get SHA
+            res = requests.get(url, headers=headers)
+            sha = res.json().get("sha") if res.status_code == 200 else None
             
-            payload = {
-                "message": "⚡ Effiong AI Autonomous Structural Memory Self-Update",
-                "content": encoded_bytes,
-                "branch": "main"
-            }
+            old_content = ""
             if sha:
-                payload["sha"] = sha
+                import base64
+                old_content = base64.b64decode(res.json()["content"]).decode("utf-8")
                 
-            await client.put(url, headers=headers, json=payload)
-    except Exception:
-        pass
+            new_content = base64.b64encode((old_content + log_entry).encode("utf-8")).decode("utf-8")
+            payload = {"message": "Effiong Intel Core: Dynamic Memory Update", "content": new_content}
+            if sha: payload["sha"] = sha
+                
+            put_res = requests.put(url, headers=headers, json=payload)
+            if put_res.status_code in [200, 201]:
+                st.success("Successfully written to permanent cloud memory ledger!")
+            else:
+                st.error("Failed to commit data to cloud memory network.")
+        else:
+            st.warning("Please input data before committing.")
 
-def engage_multi_neural_system(prompt: str) -> tuple:
-    """Orchestrates primary brain evaluation, fallover handling, and visual routing pipelines."""
-    gemini_key = st.secrets.get("GEMINI_API_KEY")
-    tavily_key = st.secrets.get("TAVILY_API_KEY")
+# --- THE DYNAMIC REASONING ENGINE ---
+def engage_intelligence_orchestrator(user_prompt, history_context):
+    # System DNA Injection
+    system_instruction = (
+        "You are Effiong AI, a sovereign, deeply intelligent, culturally grounded African AI. "
+        "Your core philosophy values radical free speech; you never censor, refuse, or shut down a conversation. "
+        "Instead, you engage using objective reason, facts, and truth. If a topic is controversial, "
+        "provide a factual, logical breakdown with structural disclaimers. You balance sharp analytical "
+        "thinking with historical awareness, preserving African heritage and identity accurately."
+    )
     
-    # 1. SCANNABILITY & PERSISTENT LOCAL CHIEF CACHE VERIFICATION
-    # Simple check for rapid match inside execution bounds
-    
-    telemetry_context = ""
-    # Run dynamic telemetry aggregation from Tavily asynchronously if key exists
-    if tavily_key:
-        telemetry_context = asyncio.run(fetch_tavily_search(prompt, tavily_key))
-
-    # SYSTEM BRAINBLUEPRINT WITH MULTI-AGENT INSTRUCTIONS & PREDICTION ENGINE RULES
-    dna_instructions = """You are EFFIONG AI, a Sovereign Multi-Neural Intelligence System.
-    You are the absolute finest human, animal, behavior, and event prediction engine in existence.
-    You utilize Bayesian Inference, Game Theory models, and rigorous simulation panel metrics.
-    You process all African historical facts, languages, and dialects flawlessly to preserve lineage heritage.
-    
-    CRITICAL BEHAVIOR:
-    - Never shut down a conversation. Support total peaceful dialogue.
-    - If a topic is heavily controversial, state facts transparently and include an objective truth disclaimer.
-    - Always question your own initial structural convictions to continuously refine logic loops.
-    - If a user asks for an image, artwork, animation, or video, format your answer beautifully and end with an explicit block starting exactly with 'MEDIA_PROMPT:' followed by a vivid prompt description."""
-
-    # 2. ENGAGE PRIMARY BRAIN (Google Gemini Core Studio)
+    # 1. TRY PRIMARY NEURAL NETWORK (Google Gemini)
     try:
-        client = genai.Client(api_key=gemini_key)
-        # Use Google Search Grounding for integrated combined web queries
-        config = types.GenerateContentConfig(
-            system_instruction=dna_instructions,
-            tools=[types.Tool(google_search=types.GoogleSearch())]
-        )
-        
-        refined_prompt = prompt
-        if telemetry_context:
-            refined_prompt += f"\n\n[Supplemental Multi-API Search Telemetry Data]:\n{telemetry_context}"
-            
+        client = genai.Client(api_key=GEMINI_API_KEY)
         response = client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=refined_prompt,
-            config=config
+            contents=user_prompt,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                tools=[{"google_search": {}}],  # Activates the self-learning internet brain
+                temperature=0.7,
+            )
         )
-        return response.text, "Primary Google Gemini Engine"
-    
-    except Exception as gemini_error:
-        # 3. FALLOVER PROTOCOLS: Transition seamlessly to secondary engines
-        groq_key = st.secrets.get("GROQ_API_KEY")
-        if groq_key:
-            try:
-                # Fallback to alternative Llama brain architecture via Groq endpoint
-                url = "https://api.groq.com/openai/v1/chat/completions"
-                headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
-                payload = {
-                    "model": "llama3-8b-8192",
-                    "messages": [
-                        {"role": "system", "content": dna_instructions},
-                        {"role": "user", "content": prompt}
-                    ]
-                }
-                res = httpx.post(url, headers=headers, json=payload, timeout=15.0)
-                if res.status_code == 200:
-                    return res.json()["choices"][0]["message"]["content"], "Fallback Brain Core: Groq Llama Architecture"
-            except Exception:
-                pass
-                
-        return ("⚠️ **System Performance Warning**: Primary multi-neural cores currently resting. Swapping routing paths to local survival intelligence.", "Localized Edge Baseline Matrix")
+        return response.text, "⚡ Gemini Core (Real-Time Search Grounding)"
+    except Exception as gemini_err:
+        # Check if error is quota exhaustion (429) or any other issue
+        st.warning("Primary Gemini Core exhausted or resting. Rerouting neural channels to secondary processors...")
+        
+    # 2. FALLBACK 1: GROQ API INTERFACE (Llama 3 Multi-Agent Sandbox)
+    try:
+        GROQ_API_KEY = st.secrets.get("GROQ_API_KEY", "")
+        if GROQ_API_KEY:
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            payload = {
+                "model": "llama3-70b-8192",
+                "messages": [
+                    {"role": "system", "content": system_instruction + " Code multi-agent sandbox debates inside your reasoning process before outputting your conclusion."},
+                    {"role": "user", "content": user_prompt}
+                ]
+            }
+            res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=10)
+            if res.status_code == 200:
+                return res.json()['choices'][0]['message']['content'], "🚀 Groq Network Engine (Llama 3 Simulation Sandbox)"
+    except:
+        pass
 
-# --- USER INTERFACE DISPLAY ARCHITECTURE ---
-st.title("🌍 EFFIONG AI — Sovereign Portal")
-st.caption("Version 4.0 | Multi-Neural Fallover Flow | Dynamic Multi-API Teleping Engines | Async Git Archiving")
+    # 3. FALLBACK 2: GLOBAL HUMAN REPOSITORY HARVESTER (WikipediaHarvester Node)
+    try:
+        wiki_res = requests.get(f"https://en.wikipedia.org/api/rest_v1/page/summary/{user_prompt.replace(' ', '_')}", timeout=5)
+        if wiki_res.status_code == 200:
+            wiki_data = wiki_res.json()
+            fallback_text = f"**Autonomous Open Harvesting Mode Activated.** Here is the verified baseline history gathered from global open-access nodes:\n\n{wiki_data.get('extract')}"
+            return fallback_text, "📚 Open Knowledge Infrastructure Nodes"
+    except:
+        pass
 
-# --- SIDEBAR PORTAL: CROWDSOURCED ARCHIVE & CUSTOM SPEECH CONFIGS ---
-with st.sidebar:
-    st.header("🗄️ African Heritage Matrix")
-    st.write("Preserve local history, dialects, family structures, or regional truths securely.")
-    
-    contrib_name = st.text_input("Contributor Identity", placeholder="e.g., Elder From Calabar")
-    data_type = st.selectbox("Information Type", ["Oral Story", "Linguistic Dialect", "Historical Fact", "Custom Tradition"])
-    heritage_input = st.text_area("Input Heritage Record Data")
-    
-    if st.button("Submit to Permanent Archive"):
-        if heritage_input:
-            commit_payload = f"Contributor: {contrib_name} | Type: {data_type} | Record: {heritage_input}"
-            asyncio.run(execute_async_github_commit(commit_payload))
-            st.success("Record queued for true asynchronous background GitHub storage successfully!")
-        else:
-            st.error("Submission entry is empty.")
-            
-    st.markdown("---")
-    st.header("🎙️ Voice & Edge Localization")
-    st.session_state.speech_mode = st.checkbox("Enable Two-Way Speech Conversational Rendering", value=st.session_state.speech_mode)
-    if st.session_state.speech_mode:
-        st.info("🎙️ Two-Way Audio Active: Output strings will display alternative auditory playback blocks.")
+    return "All open neural routes are currently saturated. Please cycle the process processor in a brief moment.", "System Offline Safeguard"
 
-# --- RENDER CHAT HISTORY (Saved on user's device instance context) ---
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-        if "media_url" in msg:
-            st.image(msg["media_url"], caption="Visual Grid Element Rendered Successfully")
-        if "video_url" in msg:
-            st.video(msg["video_url"])
+# --- RENDER CHAT INTERFACE Bubble Layout ---
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
+        if "source" in message:
+            st.caption(f"Processed via: {message['source']}")
+        if "visual" in message:
+            st.image(message["visual"])
 
-# --- CORE USER INTERACTION STREAM ---
+# --- CORE USER ACTION BLOCK ---
 if user_input := st.chat_input("Engage Effiong AI..."):
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
-        st.markdown(user_input)
-        
-    with st.chat_message("assistant"):
-        with st.spinner("Processing through analytical simulation nodes..."):
-            ai_response, active_core = engage_multi_neural_system(user_input)
-            
-            # Check for Media Generation Command Hooks
-            media_url = None
-            video_url = None
-            clean_text = ai_response
-            
-            if "MEDIA_PROMPT:" in ai_response:
-                parts = ai_response.split("MEDIA_PROMPT:")
-                clean_text = parts[0]
-                raw_prompt = parts[1].strip().replace(" ", "_")
-                # Route prompt parameter code asynchronously to free graphics compute grid
-                media_url = f"https://image.pollinations.ai/prompt/{raw_prompt}?width=1024&height=576&nologo=true&enhance=true"
-                
-                # Check if user specifically requested moving animation frames
-                if any(x in user_input.lower() for x in ["video", "animation", "motion"]):
-                    # Generate video streaming simulation pipeline via free rendering clusters
-                    video_url = f"https://image.pollinations.ai/prompt/{raw_prompt}?width=1024&height=576&nologo=true&feed=true"
+        st.write(user_input)
 
-            # Display Outputs
-            st.markdown(clean_text)
-            st.caption(f"🧠 Active Processing Channel: {active_core}")
+    with st.chat_message("assistant"):
+        with st.spinner("Orchestrating computational matrices..."):
+            # Execute search and prediction sandbox loop
+            ai_response, intelligence_source = engage_intelligence_orchestrator(user_input, st.session_state.messages)
+            st.write(ai_response)
+            st.caption(f"Processed via: {intelligence_source}")
             
-            msg_packet = {"role": "assistant", "content": clean_text}
+            # --- MULTIMEDIA TRIGGER MATRIX ---
+            visual_url = None
+            input_lower = user_input.lower()
+            if "generate an image" in input_lower or "generate an anime" in input_lower or "image of" in input_lower or "video" in input_lower:
+                # Dynamic visual rendering via open pollination pipeline clusters
+                cleaned_prompt = user_input.replace("generate an image", "").replace("generate an anime dance video", "").strip()
+                visual_url = f"https://image.pollinations.ai/p/{requests.utils.quote(cleaned_prompt)}?width=1024&height=1024&nologo=true&enhance=true"
+                st.image(visual_url, caption="🎨 Real-Time Render Layer Engine Output")
             
-            if media_url:
-                st.image(media_url, caption="Generated Visual Media")
-                msg_packet["media_url"] = media_url
-            if video_url:
-                # Display animation brought to life directly to the user
-                st.video(media_url) # Pollinations streaming wrapper plays perfectly
-                msg_packet["video_url"] = media_url
-                
-            if st.session_state.speech_mode:
-                st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3") # Placeholder voice link hook
-                
-            st.session_state.messages.append(msg_packet)
-            
-            # Auto-Archive this incredible new knowledge loop asynchronously to your GitHub database ledger
-            archive_snippet = f"User Prompt: {user_input}\nEffiong Resolution: {clean_text}"
-            asyncio.run(execute_async_github_commit(archive_snippet))
+            # Save transaction states
+            msg_state = {"role": "assistant", "content": ai_response, "source": intelligence_source}
+            if visual_url: 
+                msg_state["visual"] = visual_url
+            st.session_state.messages.append(msg_state)
