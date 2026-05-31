@@ -310,6 +310,25 @@ with st.sidebar:
             st.success(f"Parameters locked into secure ledger under: {status_tag}.")
         else:
             st.error("Cannot synchronize a blank operational canvas.")
+            
+    # --- 3 & 7. TWO-WAY SPEECH CONFIGURATION INTERFACE ---
+    st.markdown("---")
+    st.markdown("<p style='font-size:0.95rem; font-weight:600; margin-bottom:4px;'>🎙️ Voice Chat System</p>", unsafe_allow_html=True)
+    
+    # Render an interactive checkbox styled as a state selector
+    st.session_state.speech_mode = st.checkbox(
+        "ON / OFF — Activate Auditory Pipeline", 
+        value=st.session_state.speech_mode,
+        help="Enables real-time voice synthesis and auditory interaction frequencies."
+    )
+    
+    if st.session_state.speech_mode:
+        st.markdown(
+            "<div style='padding:8px; border-radius:4px; background-color:rgba(197,160,89,0.1); border-left:3px solid #C5A059; font-size:0.85rem; color:#C5A059;'>"
+            "● LINK ACTIVE: Multi-Neural Auditory Stream Connected"
+            "</div>", 
+            unsafe_allow_html=True
+        )
 
     # --- 3 & 7. TWO-WAY SPEECH CONFIGURATION INTERFACE ---
     st.markdown("---")
