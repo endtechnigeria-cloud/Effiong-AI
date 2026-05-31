@@ -1,4 +1,6 @@
+reportlab
+httpx
+beautifulsoup4
 google-genai
 streamlit
 requests
-beautifulsoup4
