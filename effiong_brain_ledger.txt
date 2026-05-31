@@ -42,3 +42,11 @@ Output: This system is unable to generate video content.
 
 Output: This system is unable to generate image content.
 ---
+
+[INPUT]: What is an along route to Jahi from Wuse zone 5, Abuja 
+[LOG]: To travel from Wuse Zone 5, Abuja, to Jahi, a direct road route is available, typically taking approximately 6 minutes to cover a distance of about 3 kilometers by vehicle.
+
+For public transport, individuals can proceed to Wuse Zone 4 or Wuse Market to access vehicles or drivers providing direct service to Jahi. Additionally, bus routes operated by the Abuja Urban Mass Transport Company Limited include Jahi as a stop on lines connecting to Wuse.
+
+Driving or taking a taxi are common methods for this intra-city commute. While walking is an option, it is a considerably longer duration, approximately 2 hours and 14 minutes for an 11.2 km distance from Abuja to Jahi.
+---
