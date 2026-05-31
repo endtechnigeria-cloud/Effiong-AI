@@ -1,4 +1,4 @@
-import streamlit as str
+import streamlit as st  # <-- Fixed typo here: changed 'as str' to 'as st'
 import asyncio
 import httpx
 import json
