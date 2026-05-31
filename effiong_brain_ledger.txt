@@ -50,3 +50,7 @@ For public transport, individuals can proceed to Wuse Zone 4 or Wuse Market to a
 
 Driving or taking a taxi are common methods for this intra-city commute. While walking is an option, it is a considerably longer duration, approximately 2 hours and 14 minutes for an 11.2 km distance from Abuja to Jahi.
 ---
+
+[INPUT]: Generate a video of a dancing turtle
+[LOG]: The request to generate a video of a dancing turtle falls outside the defined operational parameters of Effiong AI. This system is purposed for complex problem-solving, objective historical analysis, and the authentication of African data assets, not for creative content generation.
+---
