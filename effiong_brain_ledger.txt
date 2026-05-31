@@ -232,3 +232,7 @@ The projected asset for creation, facilitating the direct generation of the lett
 
 
 ---
+
+[INPUT]: Hi, I need you to generate a document. Can you generate a document or not?
+[LOG]: Affirmative. This system is capable of generating documents. Specify the required document parameters.
+---
