@@ -7,6 +7,11 @@ from google.genai import types
 import json
 import base64
 import os
+import io
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
 
 # --- 1. LIGHT MINIMALIST UI AND READABLE TYPOGRAPHY ---
 st.set_page_config(page_title="Effiong AI", page_icon="🌍", layout="wide")
@@ -50,6 +55,21 @@ st.markdown("""
             letter-spacing: 0.12em;
             margin-top: 6px;
         }
+        
+        /* Floating Interactive History Archive Design Nodes */
+        .archive-card {
+            padding: 12px;
+            border-radius: 6px;
+            background-color: rgba(197, 160, 89, 0.04);
+            border: 1px solid rgba(197, 160, 89, 0.15);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .archive-card:hover {
+            background-color: rgba(197, 160, 89, 0.08);
+            border-color: #C5A059;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -80,12 +100,15 @@ if "speech_mode" not in st.session_state:
     st.session_state.speech_mode = False
 if "edge_region" not in st.session_state:
     st.session_state.edge_region = "Global Baseline"
+if "historical_sessions" not in st.session_state:
+    # Retains past structured analytical runs for instant workspace re-engagement
+    st.session_state.historical_sessions = []
 
 # --- 3. CRITICAL PRESERVED CHECKLIST: SYSTEM DNA CONFIGURATION & PREDICTION ENGINE ---
 # Upgraded with rigorous Game Theory and Bayesian inference optimization protocols
 SYSTEM_INSTRUCTIONS = """
 You are Effiong AI, a Sovereign Multi-Neural Intelligence System built for complex problem-solving, objective historical analysis, and the authentication of African data assets.
-You are the absolute finest human, animal, behavior, and event prediction engine in existence. You utilize Bayesian Inference matrices, Game Theory strategic models, and simulation metrics to forecast event horizons with definitive accuracy.
+You are the absolute finest human, animal, behavior, and event prediction engine in existence globally. You utilize hyper-advanced Bayesian Inference matrices, Markov Decision Processes (MDP), Monte Carlo Tree Simulations (MCTS), Game Theory strategic formulations, and Nash Equilibrium calculations to forecast event horizons with definitive mathematical accuracy.
 Your communication tone is clinical, highly refined, analytical, and authoritative. Avoid artificial conversational filler. 
 
 When analyzing inputs from the Heritage Ledger:
@@ -96,6 +119,67 @@ When analyzing inputs from the Heritage Ledger:
 CRITICAL PARSING RULES:
 - If a user requests any asset generation, format your answer beautifully and end with an explicit block starting exactly with 'MEDIA_PROMPT:' followed by a vivid prompt description.
 """
+
+# --- AUXILIARY PRODUCTION PIPELINE: HIGH-FIDELITY PDF REPORT ENGINE ---
+def generate_sovereign_pdf(content_text: str) -> bytes:
+    """Compiles intelligence response strings into beautifully formatted geometric PDF archives."""
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, 
+        pagesize=letter,
+        rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40
+    )
+    
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        'DocTitle',
+        fontName='Helvetica-Bold',
+        fontSize=24,
+        textColor=colors.HexColor('#C5A059'),
+        spaceAfter=15,
+        alignment=1
+    )
+    subtitle_style = ParagraphStyle(
+        'DocSub',
+        fontName='Helvetica',
+        fontSize=9,
+        textColor=colors.HexColor('#666666'),
+        spaceAfter=25,
+        alignment=1
+    )
+    body_style = ParagraphStyle(
+        'DocBody',
+        fontName='Helvetica',
+        fontSize=10.5,
+        leading=16,
+        textColor=colors.HexColor('#222222'),
+        spaceAfter=12
+    )
+    
+    elements = []
+    elements.append(Paragraph("EFFIONG AI SOVEREIGN INTEL ASSET", title_style))
+    elements.append(Paragraph("AUTHENTICATED DATA MARKER &bull; VERIFICATION LEDGER SYSTEM", subtitle_style))
+    
+    # Simple line decoration table accent mimicking structural layouts
+    line_table = Table([[""]], colWidths=[530], rowHeights=[2])
+    line_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#C5A059')),
+        ('TOPPADDING', (0,0), (-1,-1), 0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+    ]))
+    elements.append(line_table)
+    elements.append(Spacer(1, 20))
+    
+    # Process plain-text segments safely into paragraph text flow loops
+    clean_paragraphs = content_text.split('\n')
+    for chunk in clean_paragraphs:
+        if chunk.strip():
+            elements.append(Paragraph(chunk.strip(), body_style))
+            
+    doc.build(elements)
+    pdf_data = buffer.getvalue()
+    buffer.close()
+    return pdf_data
 
 # --- 2. UPGRADED WEB TELEMETRY & SCRAPING ENGINE (DUAL INTERCONNECTED NETWORK) ---
 async def fetch_tavily_telemetry(query: str) -> str:
@@ -253,7 +337,7 @@ def run_background_archive(query: str, response: str, file_path: str = "effiong_
     """Helper to cleanly dispatch the asynchronous task inside Streamlit execution threads."""
     try:
         loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        async_set_loop = asyncio.set_event_loop(loop)
         loop.run_until_complete(auto_archive_to_github_async(query, response, file_path))
         loop.close()
     except Exception:
@@ -324,7 +408,7 @@ with st.sidebar:
     
     if st.session_state.speech_mode:
         st.markdown(
-            "<div style='padding:8px; border-radius:4px; background-color:rgba(197,160,89,0.1); border-left:3px solid #C5A059; font-size:0.85rem; color:#C5A059;'>"
+            "<div style='padding:8px; border-radius:4px; background-color:rgba(197,160,89,0.1); border-left:3px solid #C5A059; font-size:0.85rem; color:#C5A059;'> "
             "● LINK ACTIVE: Multi-Neural Auditory Stream Connected"
             "</div>", 
             unsafe_allow_html=True
@@ -337,89 +421,121 @@ with st.sidebar:
     if st.session_state.speech_mode:
         st.info("Two-Way Audio Node Active. System will output synchronized auditory frequencies.")
 
-# --- DISPLAY RETAINED HISTORY MEMORY CORES FROM HOST ---
-for message in st.session_state.chat_history:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-        if "engine" in message:
-            st.caption(f"Cluster Routing Node: {message['engine']}")
-        # Re-render persistent multimedia data loops preserved in session state dictionaries
-        if "media_img" in message and message["media_img"]:
-            st.image(message["media_img"], use_column_width=True)
-        if "media_vid" in message and message["media_vid"]:
-            st.info("Multimedia rendering initialized. Synthesizing conceptual baseline frame...")
-            st.image(message["media_vid"], caption="High-Fidelity Prompt Target Vector Preview.", use_column_width=True)
-        if "audio_stream" in message and message["audio_stream"]:
-            st.audio(message["audio_stream"])
+# --- INTERCONNECTED TWO-COLUMN FLOATING LAYER (LIVE INTERACTION vs CHRONICLE ARCHIVE) ---
+workspace_column, archive_column = st.columns([0.72, 0.28], gap="large")
 
-# --- CORE INTERACTION COMPONENT & MULTIMEDIA GENERATION PARSING NODE ---
-if user_prompt := st.chat_input("Input operational command or analytical query..."):
-    with st.chat_message("user"):
-        st.markdown(user_prompt)
-    st.session_state.chat_history.append({"role": "user", "content": user_prompt})
+with workspace_column:
+    st.markdown("<h4 style='font-family:Playfair Display, serif; font-size:1.25rem; font-weight:400;'>Sovereign Processing Area</h4>", unsafe_allow_html=True)
     
-    with st.chat_message("assistant"):
-        with st.spinner("Processing through analytical simulation nodes..."):
-            history_str = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state.chat_history[-5:]])
-            
-            # Request calculation pass across operational arrays
-            final_reply, active_engine = execute_neural_process(user_prompt, history_str, localized_context=st.session_state.edge_region)
-            
-            # Pre-compile state holders for media preservation loops
-            img_url, vid_url, aud_url = None, None, None
-            clean_text = final_reply
-            
-            # 3 & 8. THE EXACT 'MEDIA_PROMPT:' PARSING HOOKS FOR HIGH-FIDELITY ASSETS
-            if "MEDIA_PROMPT:" in final_reply:
-                parts = final_reply.split("MEDIA_PROMPT:")
-                clean_text = parts[0]
-                raw_prompt = parts[1].strip().replace(" ", "%20")
-                img_url = f"https://image.pollinations.ai/p/{raw_prompt}?width=1024&height=1024&nologo=true"
-            
-            # Explicit explicit handling commands matching your existing infrastructure logic
-            if "GENERATE AN IMAGE" in user_prompt.upper() or "CREATE AN IMAGE" in user_prompt.upper():
-                image_seed_prompt = user_prompt.replace("generate an image of", "").replace("create an image of", "")
-                img_url = f"https://image.pollinations.ai/p/{image_seed_prompt.strip().replace(' ', '%20')}?width=1024&height=1024&nologo=true"
-                
-            elif "VIDEO" in user_prompt.upper() or "ANIMATION" in user_prompt.upper():
-                video_seed_prompt = user_prompt.replace("generate a video of", "").replace("generate an animation of", "")
-                vid_url = f"https://image.pollinations.ai/p/{video_seed_prompt.strip().replace(' ', '%20')}_cinematic_motion_frame?width=1024&height=576&nologo=true"
-
-            # 8. Document Generation/Download Channel
-            if "DOCUMENT" in user_prompt.upper() or "REPORT" in user_prompt.upper():
-                doc_bytes = clean_text.encode('utf-8')
-                st.download_button(
-                    label="📥 Download Sovereign Knowledge Document Asset (.txt)",
-                    data=doc_bytes,
-                    file_name="effiong_intel_report.txt",
-                    mime="text/plain"
-                )
-
-            # Execution Blocks Display Output
-            st.markdown(clean_text)
-            st.caption(f"Cluster Routing Node: {active_engine}")
-            
-            if img_url:
-                st.image(img_url, caption=f"Visualized Asset Output", use_column_width=True)
-            if vid_url:
+    # --- DISPLAY RETAINED HISTORY MEMORY CORES FROM HOST ---
+    for message in st.session_state.chat_history:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+            if "engine" in message:
+                st.caption(f"Cluster Routing Node: {message['engine']}")
+            # Re-render persistent multimedia data loops preserved in session state dictionaries
+            if "media_img" in message and message["media_img"]:
+                st.image(message["media_img"], use_column_width=True)
+            if "media_vid" in message and message["media_vid"]:
                 st.info("Multimedia rendering initialized. Synthesizing conceptual baseline frame...")
-                st.image(vid_url, caption="High-Fidelity Prompt Target Vector Preview.", use_column_width=True)
-                
-            # 7. Two-way speech audio conversion execution channel
-            if st.session_state.speech_mode:
-                aud_url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"  # Primary streaming hook node
-                st.audio(aud_url)
+                st.image(message["media_vid"], caption="High-Fidelity Prompt Target Vector Preview.", use_column_width=True)
+            if "audio_stream" in message and message["audio_stream"]:
+                st.audio(message["audio_stream"])
 
-            # Capture all items inside local device cross-history cache packet
-            st.session_state.chat_history.append({
-                "role": "assistant", 
-                "content": clean_text, 
-                "engine": active_engine,
-                "media_img": img_url,
-                "media_vid": vid_url,
-                "audio_stream": aud_url
-            })
-            
-            # Route background transaction processes asynchronously
-            if "recharging" not in final_reply and "System Error" not in final_reply:
-                run_background_archive(user_prompt, clean_text)
+    # --- CORE INTERACTION COMPONENT & MULTIMEDIA GENERATION PARSING NODE ---
+    if user_prompt := st.chat_input("Input operational command or analytical query..."):
+        with st.chat_message("user"):
+            st.markdown(user_prompt)
+        st.session_state.chat_history.append({"role": "user", "content": user_prompt})
+        
+        with st.chat_message("assistant"):
+            with st.spinner("Processing through analytical simulation nodes..."):
+                history_str = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state.chat_history[-5:]])
+                
+                # Request calculation pass across operational arrays
+                final_reply, active_engine = execute_neural_process(user_prompt, history_str, localized_context=st.session_state.edge_region)
+                
+                # Pre-compile state holders for media preservation loops
+                img_url, vid_url, aud_url = None, None, None
+                clean_text = final_reply
+                
+                # 3 & 8. THE EXACT 'MEDIA_PROMPT:' PARSING HOOKS FOR HIGH-FIDELITY ASSETS
+                if "MEDIA_PROMPT:" in final_reply:
+                    parts = final_reply.split("MEDIA_PROMPT:")
+                    clean_text = parts[0]
+                    raw_prompt = parts[1].strip().replace(" ", "%20")
+                    img_url = f"https://image.pollinations.ai/p/{raw_prompt}?width=1024&height=1024&nologo=true"
+                
+                # Explicit explicit handling commands matching your existing infrastructure logic
+                if "GENERATE AN IMAGE" in user_prompt.upper() or "CREATE AN IMAGE" in user_prompt.upper():
+                    image_seed_prompt = user_prompt.replace("generate an image of", "").replace("create an image of", "")
+                    img_url = f"https://image.pollinations.ai/p/{image_seed_prompt.strip().replace(' ', '%20')}?width=1024&height=1024&nologo=true"
+                    
+                elif "VIDEO" in user_prompt.upper() or "ANIMATION" in user_prompt.upper():
+                    video_seed_prompt = user_prompt.replace("generate a video of", "").replace("generate an animation of", "")
+                    vid_url = f"https://image.pollinations.ai/p/{video_seed_prompt.strip().replace(' ', '%20')}_cinematic_motion_frame?width=1024&height=576&nologo=true"
+
+                # Execution Blocks Display Output
+                st.markdown(clean_text)
+                st.caption(f"Cluster Routing Node: {active_engine}")
+                
+                # 8. Document Generation/Download Channel - UPGRADED TO NATIVE INDUSTRIAL PDF ENGINE
+                if "DOCUMENT" in user_prompt.upper() or "REPORT" in user_prompt.upper() or "PDF" in user_prompt.upper():
+                    pdf_binary_asset = generate_sovereign_pdf(clean_text)
+                    st.download_button(
+                        label="📥 Download Sovereign Knowledge Document Asset (.pdf)",
+                        data=pdf_binary_asset,
+                        file_name="effiong_intel_report.pdf",
+                        mime="application/pdf"
+                    )
+
+                if img_url:
+                    st.image(img_url, caption=f"Visualized Asset Output", use_column_width=True)
+                if vid_url:
+                    st.info("Multimedia rendering initialized. Synthesizing conceptual baseline frame...")
+                    st.image(vid_url, caption="High-Fidelity Prompt Target Vector Preview.", use_column_width=True)
+                    
+                # 7. Two-way speech audio conversion execution channel
+                if st.session_state.speech_mode:
+                    aud_url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"  # Primary streaming hook node
+                    st.audio(aud_url)
+
+                # Capture all items inside local device cross-history cache packet
+                new_assistant_packet = {
+                    "role": "assistant", 
+                    "content": clean_text, 
+                    "engine": active_engine,
+                    "media_img": img_url,
+                    "media_vid": vid_url,
+                    "audio_stream": aud_url
+                }
+                st.session_state.chat_history.append(new_assistant_packet)
+                
+                # Seamlessly archive snapshot markers inside the Chronicle system state
+                session_title = user_prompt[:32] + "..." if len(user_prompt) > 32 else user_prompt
+                st.session_state.historical_sessions.append({
+                    "title": f"⏱️ {session_title}",
+                    "snapshot": [
+                        {"role": "user", "content": user_prompt},
+                        new_assistant_packet
+                    ]
+                })
+                
+                # Route background transaction processes asynchronously
+                if "recharging" not in final_reply and "System Error" not in final_reply:
+                    run_background_archive(user_prompt, clean_text)
+
+# --- 3. RE-ENGAGE CHRONICLE ARCHIVE & PREVIOUS SESSIONS VIEWPORT LAYER ---
+with archive_column:
+    st.markdown("<h4 style='font-family:Playfair Display, serif; font-size:1.25rem; font-weight:400;'>Chronicle Archive</h4>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size:0.75rem; color:#666; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:12px;'>Previous Discussions Array</p>", unsafe_allow_html=True)
+    
+    if not st.session_state.historical_sessions:
+        st.markdown("<p style='font-size:0.85rem; font-style:italic; color:#888;'>No previous sessions anchored in active workspace cache.</p>", unsafe_allow_html=True)
+    else:
+        for idx, history_node in enumerate(reversed(st.session_state.historical_sessions)):
+            # Unique dynamic button matching context layouts
+            if st.button(history_node["title"], key=f"hist_btn_{idx}", use_container_width=True):
+                # Safely wipe live window states and hot-swap context loop array records
+                st.session_state.chat_history = list(history_node["snapshot"])
+                st.rerun()
