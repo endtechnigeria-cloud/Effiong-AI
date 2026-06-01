@@ -1,7 +1,5 @@
-google-genai>=2.0.0
-groq==0.5.0
-requests==2.31.0
-wikipedia-api==0.6.0
-pandas==2.2.1
 reportlab
+httpx
+beautifulsoup4
+google-genai
 streamlit
