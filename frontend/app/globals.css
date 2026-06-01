@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.chat-container {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 #1f2937;
+}
