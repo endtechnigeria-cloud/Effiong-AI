@@ -4,6 +4,7 @@ from typing import List, Optional, Dict
 import asyncio
 import base64
 import httpx
+import os  # ← Fixed: Missing import added
 from datetime import datetime
 import logging
 
@@ -11,6 +12,7 @@ from ..core.orchestrator import AIModelOrchestrator
 from ..core.memory import VectorMemory
 
 router = APIRouter()
+
 orchestrator = AIModelOrchestrator(
     gemini_key=os.getenv("GEMINI_API_KEY"),
     tavily_key=os.getenv("TAVILY_API_KEY"),
@@ -35,7 +37,7 @@ class ChatResponse(BaseModel):
     core: str
     image_url: Optional[str] = None
     video_url: Optional[str] = None
-    audio_url: Optional[str] = None  # Voice synthesis
+    audio_url: Optional[str] = None
 
 # Background GitHub Archive
 async def archive_to_github(content: str):
@@ -83,7 +85,7 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
             history=request.history
         )
 
-        # Generate voice synthesis using Gemini Native TTS
+        # Generate voice synthesis
         audio_url = None
         if os.getenv("GEMINI_API_KEY"):
             try:
@@ -91,7 +93,7 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
             except Exception as e:
                 logger.warning(f"TTS failed: {e}")
 
-        # Archive conversation asynchronously
+        # Archive conversation
         background_tasks.add_task(
             archive_to_github,
             f"User: {request.prompt}\nEffiong: {result['response'][:500]}"
@@ -123,14 +125,12 @@ Record: {request.record}
 Consent: {request.consent}
         """
 
-        # Store in ChromaDB
         VectorMemory().add(commit_payload, {
             "type": "heritage",
             "contributor": request.contributor,
             "timestamp": datetime.now().isoformat()
         })
 
-        # Async GitHub archive if consented
         if request.consent:
             background_tasks.add_task(archive_to_github, commit_payload)
 
@@ -143,4 +143,4 @@ Consent: {request.consent}
 
 @router.get("/api/health")
 async def health():
-    return {"status": "healthy", "version": "5.1", "core": "EFFIONG Sovereign Intelligence"}
+    return {"status": "healthy", "version": "5.1.1", "core": "EFFIONG Sovereign Intelligence"}
