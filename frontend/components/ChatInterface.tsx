@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { Send, Image, Play } from 'lucide-react';
+import { Send, Image, Play, Volume2 } from 'lucide-react';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   imageUrl?: string;
   videoUrl?: string;
+  audioUrl?: string;
 }
 
 export default function ChatInterface() {
@@ -30,12 +31,13 @@ export default function ChatInterface() {
 
     const userMessage: Message = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = input;
     setInput('');
     setIsLoading(true);
 
     try {
       const res = await axios.post('http://localhost:8000/api/chat', {
-        prompt: input,
+        prompt: currentInput,
         history: messages
       });
 
@@ -43,7 +45,8 @@ export default function ChatInterface() {
         role: 'assistant',
         content: res.data.response,
         imageUrl: res.data.image_url,
-        videoUrl: res.data.video_url
+        videoUrl: res.data.video_url,
+        audioUrl: res.data.audio_url
       };
 
       setMessages(prev => [...prev, aiMsg]);
@@ -58,12 +61,17 @@ export default function ChatInterface() {
     }
   };
 
+  const playAudio = (audioUrl: string) => {
+    const audio = new Audio(audioUrl);
+    audio.play().catch(err => console.error("Audio playback failed:", err));
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="border-b border-gray-800 p-6">
         <h2 className="text-3xl font-bold">Sovereign Intelligence Portal</h2>
-        <p className="text-emerald-400 text-sm">Multi-Neural • Chroma Memory • Gemini Native Vision</p>
+        <p className="text-emerald-400 text-sm">Multi-Neural • Chroma Memory • Gemini Native Vision + Voice</p>
       </div>
 
       {/* Messages Area */}
@@ -86,10 +94,24 @@ export default function ChatInterface() {
               <p className="whitespace-pre-wrap">{msg.content}</p>
               
               {msg.imageUrl && (
-                <img src={msg.imageUrl} alt="Generated" className="mt-4 rounded-xl max-w-full" />
+                <img src={msg.imageUrl} alt="Generated Visual" className="mt-4 rounded-xl max-w-full" />
               )}
               {msg.videoUrl && (
                 <video src={msg.videoUrl} controls className="mt-4 rounded-xl max-w-full" />
+              )}
+              
+              {/* Voice Playback */}
+              {msg.audioUrl && msg.role === 'assistant' && (
+                <div className="mt-4 flex items-center gap-3 bg-gray-800 rounded-xl p-3">
+                  <button
+                    onClick={() => playAudio(msg.audioUrl!)}
+                    className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 px-5 py-2 rounded-xl transition"
+                  >
+                    <Volume2 className="w-5 h-5" />
+                    <span>Play Voice Response</span>
+                  </button>
+                  <span className="text-xs text-gray-400">Gemini Natural Speech</span>
+                </div>
               )}
             </div>
           </div>
@@ -97,8 +119,8 @@ export default function ChatInterface() {
 
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-gray-900 rounded-2xl px-6 py-4">
-              Processing through sovereign neural pathways...
+            <div className="bg-gray-900 rounded-2xl px-6 py-4 flex items-center gap-3">
+              <div className="animate-pulse">Processing through sovereign neural pathways...</div>
             </div>
           </div>
         )}
@@ -126,7 +148,7 @@ export default function ChatInterface() {
           </button>
         </div>
         <p className="text-center text-xs text-gray-500 mt-3">
-          Powered by Gemini • Chroma Vector Memory • Sovereign African Intelligence
+          Powered by Gemini • Chroma Vector Memory • Sovereign African Intelligence + Voice
         </p>
       </div>
     </div>
