@@ -1,0 +1,38 @@
+# EFFIONG AI - Python dependencies
+# Install with: pip install -r requirements.txt
+
+# --- Core app ---------------------------------------------------------------
+streamlit>=1.38,<2
+requests>=2.31
+
+# --- Multi-brain / math / embeddings -----------------------------------------
+sympy>=1.12
+numpy>=1.26
+
+# --- Document engine (PDF / Word / PowerPoint / charts) ----------------------
+reportlab>=4.1
+python-docx>=1.1
+python-pptx>=0.6.23
+pypdf>=4.0
+matplotlib>=3.8
+markdown-it-py>=3.0
+pandas>=2.1
+openpyxl>=3.1          # pandas xlsx engine (read)
+XlsxWriter>=3.2         # pandas xlsx engine (write)
+
+# --- File ingestion (images / video / web pages) ------------------------------
+Pillow>=10.2
+imageio[ffmpeg]>=2.34
+beautifulsoup4>=4.12
+
+# --- Live web search (free, keyless default tier) -----------------------------
+ddgs>=9.0
+
+# --- Optional/remote persistence tiers (safe_import: app works without these) -
+supabase>=2.4
+pinecone>=4.0
+internetarchive>=4.0
+
+# --- Currently unused directly but commonly paired with this stack -----------
+# (kept out intentionally: torch/transformers/etc. are NOT required - every AI
+#  call goes through free/paid HTTP APIs in src/services/llm_providers.py)

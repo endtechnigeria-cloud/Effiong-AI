@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.streamlit/secrets.toml
+chat_history.json
+chat_history.json.tmp
+app_data/
+generated_assets/
+generated_documents/
+operator_logs/
+vector_memory/*.db
+vector_memory/*.db-*
+.DS_Store
+*.egg-info/
