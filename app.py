@@ -282,7 +282,18 @@ st.markdown("""
         z-index: 1000000 !important;
         opacity: 1 !important;
         visibility: visible !important;
+        background-color: #121620 !important;
+        border: 1px solid #212631 !important;
+        border-radius: 50% !important;
+        width: 40px !important;
+        height: 40px !important;
     }
+    [data-testid="collapsedControl"] svg,
+    [data-testid="stSidebarCollapsedControl"] svg {
+        fill: #F0F6FC !important;
+        color: #F0F6FC !important;
+    }
+    
     [data-testid="collapsedControl"] svg,
     [data-testid="stSidebarCollapsedControl"] svg,
     header[data-testid="stHeader"] svg {

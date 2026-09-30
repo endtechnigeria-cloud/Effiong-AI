@@ -1,11 +1,3 @@
-# Add this file to your project as .streamlit/config.toml (same folder structure, alongside app.py).
-#
-# Right now Effiong AI paints itself dark purely with injected CSS while Streamlit's own theme
-# config stays on the default (light) theme. Streamlit's native chrome — the header toolbar, the
-# sidebar show/hide arrow, tooltips, the "Deploy" menu — is colored from THIS config, not from your
-# CSS. That mismatch is very likely why the sidebar's reopen arrow is hard/impossible to see: it's
-# probably rendering in a dark color meant for a light background. Setting a real dark theme here
-# fixes it at the source instead of chasing every native element with !important CSS.
 [theme]
 base = "dark"
 primaryColor = "#D27D2D"
@@ -13,3 +5,14 @@ backgroundColor = "#0B0F17"
 secondaryBackgroundColor = "#121620"
 textColor = "#F0F6FC"
 font = "sans serif"
+
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
